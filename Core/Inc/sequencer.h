@@ -30,12 +30,12 @@ typedef enum {
 } Bool;
 
 static Mode currentMode = PLAY;
-static int currentStep = 0;
+static uint4_t currentStep = 0;
 static Bool updateBPM = FALSE;
-static int BPM = 80;
+static uint8_t BPM = 80;
 
-static float stepValues[8];
-static float envelope;
+static uint32_t stepValues[8];
+static uint32_t envelope;
 
 void play(void);
 
@@ -54,5 +54,7 @@ float readADC(uint16_t pin);
 void writeDAC(float value, uint16_t);
 
 void Seq_Error_Handler(void);
+
+void updateSequencerValues(uint32_t *buffer);
 
 #endif /* INC_SEQUENCER_H_ */
