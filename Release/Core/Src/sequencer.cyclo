@@ -1,0 +1,8 @@
+../Core/Src/sequencer.c:10:6:play	1
+../Core/Src/sequencer.c:20:6:edit	2
+../Core/Src/sequencer.c:30:6:onTimerInterruption	2
+../Core/Src/sequencer.c:38:6:onExternalInterruption	4
+../Core/Src/sequencer.c:64:6:changeBPM	1
+../Core/Src/sequencer.c:69:6:resetEnvelope	1
+../Core/Src/sequencer.c:74:7:readADC	1
+../Core/Src/sequencer.c:79:6:writeDAC	1

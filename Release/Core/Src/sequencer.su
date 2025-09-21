@@ -1,0 +1,8 @@
+../Core/Src/sequencer.c:10:6:play	0	static
+../Core/Src/sequencer.c:20:6:edit	8	static
+../Core/Src/sequencer.c:30:6:onTimerInterruption	0	static
+../Core/Src/sequencer.c:38:6:onExternalInterruption	0	static
+../Core/Src/sequencer.c:64:6:changeBPM	0	static
+../Core/Src/sequencer.c:69:6:resetEnvelope	0	static
+../Core/Src/sequencer.c:74:7:readADC	0	static
+../Core/Src/sequencer.c:79:6:writeDAC	0	static

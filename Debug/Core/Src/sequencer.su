@@ -1,0 +1,9 @@
+../Core/Src/sequencer.c:10:6:play	8	static
+../Core/Src/sequencer.c:20:6:edit	8	static
+../Core/Src/sequencer.c:30:6:onTimerInterruption	16	static
+../Core/Src/sequencer.c:51:6:onExternalInterruption	24	static
+../Core/Src/sequencer.c:78:6:changeBPM	16	static
+../Core/Src/sequencer.c:91:6:resetEnvelope	8	static
+../Core/Src/sequencer.c:96:7:readADC	16	static
+../Core/Src/sequencer.c:101:6:writeDAC	16	static
+../Core/Src/sequencer.c:106:6:Seq_Error_Handler	4	static,ignoring_inline_asm

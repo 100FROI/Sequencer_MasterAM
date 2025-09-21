@@ -1,0 +1,115 @@
+/*
+ * sequencer.c
+ *
+ *  Created on: Sep 20, 2025
+ *      Author: francois
+ */
+
+#include "sequencer.h"
+
+void play()
+{
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+	do {
+		//writeDAC(stepValues[currentStep], GPIO_PIN_12);
+		//writeDAC(envelope, GPIO_PIN_DAC2);
+	} while(currentMode == PLAY);
+	edit();
+}
+
+void edit()
+{
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+	do {
+		//writeDAC(readADC(GPIO_PIN_ADC1), GPIO_PIN_DAC1);
+		//writeDAC(envelope, GPIO_PIN_DAC2);
+	} while(currentMode == EDIT);
+	play();
+}
+
+void onTimerInterruption(TIM_HandleTypeDef *htim)
+{
+
+	if(currentMode == PLAY) {
+		++currentStep;
+	}
+	resetEnvelope();
+
+	if(updateBPM == TRUE)
+		{
+			// MODIFIER LA VALEUR DU PRESCALER POUR AVOIR LE BPM SOUHAITÉ
+			if (HAL_TIM_Base_Init(htim) != HAL_OK)
+			{
+				Seq_Error_Handler();
+			}
+			HAL_TIM_Base_Start_IT(htim);
+			updateBPM = FALSE;
+		}
+	//HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_5);
+}
+
+void onExternalInterruption(uint16_t pin)
+{
+	switch(pin) {
+
+	case GPIO_PIN_10: // ROTSWITCH : CHANGE MODE
+		if(currentMode == PLAY) {
+			currentMode = EDIT;
+		}
+		else {
+			currentMode = PLAY;
+		}
+	break;
+
+	case GPIO_PIN_ROTA: // ROTA : CHANGE BPM
+		changeBPM(GPIO_PIN_ROTB);
+	break;
+
+	case GPIO_PIN_8: // SW : CHANGE STEP WHEN EDITING
+		if(currentMode == EDIT) {
+			stepValues[currentStep] = readADC(GPIO_PIN_ADC1);
+			++currentStep;
+			currentStep %= 8;
+		}
+	break;
+	}
+}
+
+void changeBPM(uint16_t ROTB)
+{
+	if(HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_ROTB) && BPM < 300) {
+		++BPM;
+		updateBPM = TRUE;
+	}
+	else if (!HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_ROTB) && BPM > 30) {
+		--BPM;
+		updateBPM = TRUE;
+	}
+
+}
+
+void resetEnvelope()
+{
+	envelope = readADC(GPIO_PIN_ADC2);
+}
+
+float readADC(uint16_t pin)
+{
+	return 0;
+}
+
+void writeDAC(float value, uint16_t)
+{
+
+}
+
+void Seq_Error_Handler(void)
+{
+  /* USER CODE BEGIN Error_Handler_Debug */
+	/* User can add his own implementation to report the HAL error return state */
+	__disable_irq();
+	while (1)
+	{
+	}
+  /* USER CODE END Error_Handler_Debug */
+}
