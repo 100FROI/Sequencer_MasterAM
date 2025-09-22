@@ -11,8 +11,7 @@ void play()
 {
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
 	do {
-		//writeDAC(stepValues[currentStep], GPIO_PIN_12);
-		//writeDAC(envelope, GPIO_PIN_DAC2);
+
 	} while(currentMode == PLAY);
 	edit();
 }
@@ -21,8 +20,7 @@ void edit()
 {
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
 	do {
-		//writeDAC(readADC(GPIO_PIN_ADC1), GPIO_PIN_DAC1);
-		//writeDAC(envelope, GPIO_PIN_DAC2);
+
 	} while(currentMode == EDIT);
 	play();
 }
@@ -36,16 +34,15 @@ void onTimerInterruption(TIM_HandleTypeDef *htim)
 	resetEnvelope();
 
 	if(updateBPM == TRUE)
+	{
+		htim->Init.Period = (1965679/BPM)-1;
+		if (HAL_TIM_Base_Init(htim) != HAL_OK)
 		{
-			// MODIFIER LA VALEUR DU PRESCALER POUR AVOIR LE BPM SOUHAITÉ
-			if (HAL_TIM_Base_Init(htim) != HAL_OK)
-			{
-				Seq_Error_Handler();
-			}
-			HAL_TIM_Base_Start_IT(htim);
-			updateBPM = FALSE;
+			Seq_Error_Handler();
 		}
-	//HAL_GPIO_TogglePin(GPIOA,GPIO_PIN_5);
+		HAL_TIM_Base_Start_IT(htim);
+		updateBPM = FALSE;
+	}
 }
 
 void onExternalInterruption(uint16_t pin)
@@ -67,7 +64,6 @@ void onExternalInterruption(uint16_t pin)
 
 	case GPIO_PIN_8: // SW : CHANGE STEP WHEN EDITING
 		if(currentMode == EDIT) {
-			stepValues[currentStep] = readADC(GPIO_PIN_ADC1);
 			++currentStep;
 			currentStep %= 8;
 		}
@@ -88,19 +84,17 @@ void changeBPM(uint16_t ROTB)
 
 }
 
-void resetEnvelope()
-{
-	envelope = readADC(GPIO_PIN_ADC2);
-}
-
-float readADC(uint16_t pin)
-{
-	return 0;
-}
-
 void writeDAC(float value, uint16_t)
 {
 
+}
+
+void updateSequencerValues(uint32_t *buffer)
+{
+	envelope = buffer[1];
+	if (currentMode == EDIT) {
+		stepValues[currentStep] = buffer[0];
+	}
 }
 
 void Seq_Error_Handler(void)
